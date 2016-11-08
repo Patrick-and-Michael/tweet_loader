@@ -32,27 +32,32 @@ def get_newest_oldest():
 
 @sched.scheduled_job('interval', minutes=1)
 def load_tweets():
-    print('starting...')
+    print('starting job...')
     newest, oldest = get_newest_oldest()
     api = initiate_tweepy_api()
     trump = api.get_user('realDonaldTrump')
     if newest < trump.status.id:
-        newer_tweets = tweepy.Cursor(api.user_timeline,
-                                     id=trump.id,
-                                     since_id=newest).items(20)
+        tweets = tweepy.Cursor(api.user_timeline,
+                               id=trump.id,
+                               since_id=newest).items(20)
         print('got newer tweets')
-        payload = {'statuses': []}
-        for s in newer_tweets:
-            d = {}
-            d['raw_text'] = s.text
-            d['author_name'] = s.author.name
-            d['author_id'] = s.author.id
-            d['created_at'] = str(s.created_at)
-            d['tweet_id'] = s.id
-            payload['statuses'].append(d)
+    else:
+        tweets = tweepy.Cursor(api.user_timeline,
+                               id=trump.id,
+                               max_id=oldest).items(20)
+        print('got older tweets')
+    payload = {'statuses': []}
+    for s in tweets:
+        d = {}
+        d['raw_text'] = s.text
+        d['author_name'] = s.author.name
+        d['author_id'] = s.author.id
+        d['created_at'] = str(s.created_at)
+        d['tweet_id'] = s.id
+        payload['statuses'].append(d)
 
-        requests.post('https://intense-tor-73147.herokuapp.com/api/tweetloader', json=payload)
-        print('posted new tweets to primary app')
+    requests.post('https://intense-tor-73147.herokuapp.com/api/tweetloader', json=payload)
+    print('posted tweets to primary app')
 
 
 if __name__ == '__main__':
