@@ -39,12 +39,12 @@ def load_tweets():
     if newest < trump.status.id:
         tweets = tweepy.Cursor(api.user_timeline,
                                id=trump.id,
-                               since_id=newest).items(20)
+                               since_id=newest).items()
         print('got newer tweets')
     else:
         tweets = tweepy.Cursor(api.user_timeline,
                                id=trump.id,
-                               max_id=oldest).items(20)
+                               max_id=oldest).items()
         print('got older tweets')
     payload = {'statuses': []}
     for s in tweets:
