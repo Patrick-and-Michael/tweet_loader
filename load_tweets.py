@@ -16,7 +16,9 @@ sched = BlockingScheduler()
 def initiate_tweepy_api():
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-    return tweepy.API(auth)
+    return tweepy.API(auth,
+                      wait_on_rate_limit=True,
+                      wait_on_rate_limit_notify=True)
 
 
 def get_newest_oldest():
