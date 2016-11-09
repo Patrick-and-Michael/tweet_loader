@@ -56,6 +56,8 @@ def load_tweets():
         d['tweet_id'] = s.id
         payload['statuses'].append(d)
 
+    print('count: {}'.format(len(payload['statuses'])))
+
     requests.post('https://intense-tor-73147.herokuapp.com/api/tweetloader', json=payload)
     print('posted tweets to primary app')
 
