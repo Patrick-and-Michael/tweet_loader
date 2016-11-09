@@ -59,7 +59,7 @@ def load_tweets():
     count = len(payload['statuses'])
     print('count: {}'.format(len(payload['statuses'])))
 
-    if count < 0:
+    if count > 0:
         response = requests.post('https://intense-tor-73147.herokuapp.com/api/tweetloader', json=payload)
         print('posted tweets to primary app: {}'.format(response.status_code))
 
